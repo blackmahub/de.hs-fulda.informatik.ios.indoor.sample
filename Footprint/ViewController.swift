@@ -70,6 +70,11 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
      */
     var mapKitTilesetRevealed = false
 
+	/**
+		to check either initial map region is defined or not
+	*/
+	var isRegionDefined = false
+
     /// Call this to reset the camera.
     @IBAction func resetCamera(_ sender: AnyObject) {
         visibleMapRegionDelegate.mapViewResetCameraToFloorplan(mapView)
@@ -471,4 +476,43 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
 
         return [floorplanPDFBox, floorplanBoundingMapRect, floorplanBoundingMapRectWithRotations]
     }
+
+	func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        
+        guard !locations.isEmpty else {
+            
+            print("Locations Array is empty, no Location is found.")
+            return
+        }
+        
+        let currentLocation = locations.last!
+        
+        print("Current Location: \(currentLocation.description)")
+        print("Current Location Coordinate: \(currentLocation.coordinate)")
+        print("Current Location Latitude: \(currentLocation.coordinate.latitude.description)")
+        print("Current Location Longitude: \(currentLocation.coordinate.longitude.description)")
+        
+        if !isRegionDefined {
+            
+            let locationDistance = CLLocationDistance(1000)
+            let currentRegion = MKCoordinateRegionMakeWithDistance(currentLocation.coordinate, locationDistance, locationDistance)
+            campusMap.setRegion(currentRegion, animated: true)
+            
+            isRegionDefined = true
+        }
+        
+        campusMap.showsUserLocation = true
+        campusMap.showsCompass = true
+        campusMap.showsScale = true
+        campusMap.showsTraffic = true
+        campusMap.showsBuildings = true
+        campusMap.showsPointsOfInterest = true
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        
+        print("Unable to get Current Location Data.")
+        print("Error: \(error.localizedDescription)")
+    }
+
 }
