@@ -225,7 +225,8 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
     func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
         let location: CLLocation = userLocation.location!
         
-        print("Current Location: \(location)")
+        print("Mahbub's Current Location: \(location)")
+        print(location.floor)
         
         // CLLocation updates will not always have floor information...
         if (location.floor != nil) {
@@ -496,17 +497,12 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
             
             let locationDistance = CLLocationDistance(1000)
             let currentRegion = MKCoordinateRegionMakeWithDistance(currentLocation.coordinate, locationDistance, locationDistance)
-            campusMap.setRegion(currentRegion, animated: true)
+            mapView.setRegion(currentRegion, animated: true)
             
             isRegionDefined = true
         }
         
-        campusMap.showsUserLocation = true
-        campusMap.showsCompass = true
-        campusMap.showsScale = true
-        campusMap.showsTraffic = true
-        campusMap.showsBuildings = true
-        campusMap.showsPointsOfInterest = true
+        
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
